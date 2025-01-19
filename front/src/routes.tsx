@@ -14,6 +14,7 @@ function PrivateRoute({isForAuthenticated}: PrivateRouteProps) {
 	const { pathname, search } = useLocation()
 	const redirectRoute = new URLSearchParams(search).get('redirect') ?? '/'
 	const { user } = useAuth()
+    console.log(user)
 	return (
 		!((user == undefined) !== !isForAuthenticated) ? <Outlet></Outlet> : <Navigate  to={!isForAuthenticated ? `${redirectRoute}` : `/login/?redirect=${pathname}`}/>
 	)

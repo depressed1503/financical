@@ -1,15 +1,22 @@
-import { createContext, ReactNode, useContext, useState } from "react"
+import { createContext, ReactNode, useContext } from "react"
 import { useNavigate } from "react-router"
 import Axios from "@/lib/axiosConfig"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { getCurrentUser } from "@/lib/queryFunctions"
 
 const AuthContext = createContext<{
-    user: object | null,
+    user: object | undefined,
     login: (p1: string, p2: string) => void,
     logout: () => void
-}>({user: null, login: () => {}, logout: () => {}})
+}>({user: undefined, login: () => {}, logout: () => {}})
 
 export default function AuthProvider(props: {children: ReactNode}) {
-    const [user, setUser] = useState(null)
+    const {data: user} = useQuery({
+        queryKey: ["user"],
+        queryFn: getCurrentUser,
+        retry: false,
+    })
+    const queryClient = useQueryClient()
     const navigate = useNavigate()
 
     async function login(login: string, password: string) {
@@ -20,7 +27,7 @@ export default function AuthProvider(props: {children: ReactNode}) {
                 password
             }).then((resp) => {
                 console.log(resp)
-                setUser(resp.data["user"])
+                queryClient.invalidateQueries({queryKey: ["user"]})
                 navigate("/")
             }).catch((error) => {
                 console.warn(error)

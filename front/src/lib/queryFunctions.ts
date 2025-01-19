@@ -5,3 +5,7 @@ export async function createUser(login: string, email: string, password: string,
         login, email, password, first_name, last_name, username: email 
     })
 }
+
+export async function getCurrentUser() {
+    return await Axios.get("api/current_user/")
+}
