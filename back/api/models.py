@@ -1,9 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser
 
 
-class CustomUser(AbstractBaseUser):
-    pass
+class CustomUser(AbstractUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    email = models.EmailField(unique=True)
 
 class Spending(models.Model):
     user = models.ForeignKey(to='CustomUser', on_delete=models.CASCADE)

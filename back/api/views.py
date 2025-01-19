@@ -21,6 +21,11 @@ class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+class RegistrationView(generics.CreateAPIView):
+    permission_classes = [permissions.AllowAny]
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+
 class LoginView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -34,12 +39,11 @@ class LoginView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Authenticate user
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            resp = response.Response({"message": "Login successful."}, status=status.HTTP_200_OK)
+            resp = response.Response({"message": "Login successful.", "user": CustomUserSerializer(user).data}, status=status.HTTP_200_OK)
             resp.set_cookie(
                 key="sessionid",
                 value=request.session._get_or_create_session_key(),
@@ -68,8 +72,8 @@ class CSRFTokenView(views.APIView):
         resp.set_cookie(
             key='csrftoken',
             value=csrf_token,
-            httponly=False,  # Allows access by JavaScript if needed
-            secure=False,    # Set to True in production with HTTPS
-            samesite='Lax'   # Adjust based on your needs (e.g., 'Strict' or 'None')
+            httponly=False,
+            secure=False,
+            samesite='Lax'
         )
         return resp

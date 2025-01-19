@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import LoginPage from "@/pages/LoginPage"
 import IndexPage from "@/pages/IndexPage"
 import NavBar from "./components/NavBar"
+import RegistrationPage from "./pages/RegistrationPage"
 
 type PrivateRouteProps = {
 	isForAuthenticated: boolean,
@@ -33,6 +34,7 @@ export default function AppRoutes() {
                         </Route>
                         <Route element={<PrivateRoute isForAuthenticated={false} />}>
                             <Route path="/login" element={<LoginPage/>}></Route>
+                            <Route path="/registration" element={<RegistrationPage/>}></Route>
                         </Route>
                         <Route>
                             <Route path="/" element={<IndexPage/>}></Route>

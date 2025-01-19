@@ -1,13 +1,15 @@
-import { createContext, ReactNode, useContext } from "react"
+import { createContext, ReactNode, useContext, useState } from "react"
 import { useNavigate } from "react-router"
 import Axios from "@/lib/axiosConfig"
 
 const AuthContext = createContext<{
+    user: object | null,
     login: (p1: string, p2: string) => void,
     logout: () => void
-}>({login: () => {}, logout: () => {}})
+}>({user: null, login: () => {}, logout: () => {}})
 
 export default function AuthProvider(props: {children: ReactNode}) {
+    const [user, setUser] = useState(null)
     const navigate = useNavigate()
 
     async function login(login: string, password: string) {
@@ -18,6 +20,7 @@ export default function AuthProvider(props: {children: ReactNode}) {
                 password
             }).then((resp) => {
                 console.log(resp)
+                setUser(resp.data["user"])
                 navigate("/")
             }).catch((error) => {
                 console.warn(error)
@@ -36,6 +39,7 @@ export default function AuthProvider(props: {children: ReactNode}) {
     return (
         <AuthContext.Provider value={
             {
+                user,
                 login,
                 logout
             }
