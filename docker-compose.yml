@@ -33,9 +33,10 @@ services:
       DEBUG: 0
 
     command: >
-      sh -c "python manage.py migrate &&
-             echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell
-             && python manage.py collectstatic --noinput && gunicorn --workers 3 --bind 0.0.0.0:8000 backend.wsgi:application --timeout 120"
+     bash -c "python manage.py migrate &&
+         echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
+         python manage.py collectstatic --noinput &&
+         gunicorn --workers 3 --bind 0.0.0.0:8000 backend.wsgi:application --timeout 120"
     ports:
       - "8001:8000"
     depends_on:
