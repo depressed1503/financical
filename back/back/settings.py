@@ -8,7 +8,11 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DEBUG", 'True').lower() in ('true', '1', 't',)
 HOST = os.environ.get("HOST", "financical.ru")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+	"127.0.0.1",
+	"localhost",
+	"financical.ru"
+]
 
 
 # Application definition
