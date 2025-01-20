@@ -70,7 +70,7 @@ else:
 			"USER": os.environ.get("DATABASE_USER", "myuser"),
 			"PASSWORD": os.environ.get("DATABASE_PASSWORD", "mypassword"),
 			"HOST": os.environ.get("DATABASE_HOST", "localhost"),
-			"PORT": os.environ.get("DATABASE_PORT", 5432),
+			"PORT": os.environ.get("DATABASE_PORT", 5431),
 		}
 	}
 
