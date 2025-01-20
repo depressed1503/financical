@@ -11,7 +11,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY default.conf /etc/nginx/nginx.conf
 
 # Copy SSL certificates
-COPY finanical.crt /etc/nginx/financical.crt
+COPY financical.crt /etc/nginx/financical.crt
 COPY financical.key /etc/nginx/financical.key
 
 # Set the working directory
