@@ -11,8 +11,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY default.conf /etc/nginx/nginx.conf
 
 # Copy SSL certificates
-COPY acc-sechenov.crt /etc/nginx/acc-sechenov.crt
-COPY acc-sechenov.key /etc/nginx/acc-sechenov.key
+COPY finanical.crt /etc/nginx/financical.crt
+COPY financical.key /etc/nginx/financical.key
 
 # Set the working directory
 WORKDIR /usr/share/nginx/html
