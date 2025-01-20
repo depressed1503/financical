@@ -7,7 +7,7 @@ const Axios = axios.create({
 	xsrfHeaderName: 'X-CSRFToken',
 	withCredentials: true,
 	withXSRFToken: true,
-	baseURL: "http://127.0.0.1:8000/",
+	baseURL: backendHost,
 	headers: {
 		"Content-Type": "application/json",
 		"Accept": "application/json"
