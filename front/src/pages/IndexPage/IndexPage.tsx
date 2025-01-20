@@ -2,7 +2,7 @@ import AddComponent from "@/components/IndexPage/AddComponent"
 import CategoriesComponent from "@/components/IndexPage/CategoriesComponent"
 import { useAuth } from "@/context/authContext"
  
-import { addDays, format } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
  
