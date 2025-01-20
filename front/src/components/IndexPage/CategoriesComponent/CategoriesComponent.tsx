@@ -7,17 +7,18 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import CategoryIconChooseComponent from "../CategoryIconChooseComponent";
+import { DateRange } from "react-day-picker";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function CategoriesComponent() {
+export default function CategoriesComponent(props: {date: DateRange | undefined}) {
     const { data: userCategories } = useQuery({
         queryKey: ["user_categories"],
         queryFn: getCurrentUserCategories
     })
     const { data: userSpendings } = useQuery({
-        queryKey: ["user_spendings"],
-        queryFn: getCurrentUserSpendings
+        queryKey: ["user_spendings", props.date],
+        queryFn: () => getCurrentUserSpendings(props.date)
     })
 
     const [newCategoryDialogShown, setNewCategoryDialogShown] = useState<boolean>(false)
@@ -26,7 +27,7 @@ export default function CategoriesComponent() {
         <div className="flex flex-col justify-center">
             <Dialog open={newCategoryDialogShown} onOpenChange={setNewCategoryDialogShown}>
                 <DialogTrigger asChild>
-                    <Badge>
+                    <Badge className="h-12">
                         <Plus></Plus>
                         Категория
                     </Badge>

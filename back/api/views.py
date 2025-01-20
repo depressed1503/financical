@@ -1,3 +1,4 @@
+import datetime
 from rest_framework import generics, views, permissions, response, status
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
@@ -9,8 +10,12 @@ class SpendingListCreateAPIView(generics.ListCreateAPIView):
     queryset = Spending.objects.all()
     serializer_class = SpendingSerializer
 
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+    def get_queryset(self):
+        queryset = Spending.objects.filter(timestamp__range=(
+                datetime.datetime.strptime(self.request.query_params["from"], "%d.%m.%Y"),
+                datetime.datetime.strptime(self.request.query_params["to"], "%d.%m.%Y"),
+            ))
+        return queryset
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer

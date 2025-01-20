@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -32,10 +33,10 @@ export default function AddComponent() {
         <>
             <Dialog open={addSpendingDialogShow} onOpenChange={setAddSpendingDialogShown}>
                 <DialogTrigger asChild>
-                    <Button>
+                    <Badge className="h-12">
                         <Plus></Plus>
                         Трата
-                    </Button>
+                    </Badge>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>

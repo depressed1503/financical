@@ -1,3 +1,5 @@
+import { addDays } from 'date-fns';
+import { DateRange } from "react-day-picker"
 import Axios from "./axiosConfig"
 import { Category, CustomUser, Spending } from "./types"
 
@@ -15,8 +17,9 @@ export async function getCurrentUserCategories() {
     return await Axios.get<Category[]>("api/category/")
 }
 
-export async function getCurrentUserSpendings() {
-    return await Axios.get<Spending[]>("api/spending/")
+export async function getCurrentUserSpendings(date: DateRange | undefined) {
+    if (date?.from !== undefined && date.to !== undefined)
+        return await Axios.get<Spending[]>(`api/spending/?from=${date.from?.toLocaleDateString("ru-RU")}&to=${addDays(date.to, 1)?.toLocaleDateString("ru-Ru")}`)
 }
 
 export async function createCategory(user: number | undefined, name: string, color: string, icon: string) {
