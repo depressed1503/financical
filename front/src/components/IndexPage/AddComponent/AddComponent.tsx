@@ -7,6 +7,7 @@ import { useAuth } from "@/context/authContext";
 import { createSpending } from "@/lib/queryFunctions";
 import { Category } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -51,7 +52,7 @@ export default function AddComponent() {
                                 <SelectValue placeholder="Категория" />
                             </SelectTrigger>
                             <SelectContent>
-                                {userCategories && userCategories.data?.map((category: Category) => 
+                                {userCategories && (userCategories as AxiosResponse).data?.map((category: Category) => 
                                 {
                                     return <SelectItem key={category.name} value={category.id.toString()}>{category.icon} {category.name}</SelectItem>
                                 })}
