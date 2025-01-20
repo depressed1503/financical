@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+  pgdb:
+    image: postgres:latest
+    container_name: pgdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      PG_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  back:
+    env_file:
+      - ".env"
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USER: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      DATABASE_HOST: ${DB_HOST}
+      DATABASE_PORT: 5432
+      YADISK_TOKEN: ${YADISK_TOKEN}
+      ENV_EMAIL: ${ENV_EMAIL}
+      ENV_PASSWORD: ${ENV_PASSWORD}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: 0
+
+    command: >
+      sh -c "python manage.py migrate &&
+             echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell
+             && python manage.py collectstatic --noinput && gunicorn --workers 3 --bind 0.0.0.0:8000 backend.wsgi:application --timeout 120"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pgdb
+    volumes:
+      - media:/vol/media/
+      - static:/vol/static/
+
+  front:
+    build:
+      context: frontend
+      dockerfile: ./Dockerfile
+      args:
+        - VITE_BACKEND_IP=${VITE_BACKEND_IP}
+        - VITE_DEBUG=${DEBUG}
+    container_name: frontend
+    command: serve -s dist
+    ports:
+      - '3000:3000'
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    depends_on:
+      - back
+      - front
+    volumes:
+      - media:/vol/media/
+      - static:/vol/static/
+volumes:
+  postgres_data:
+  media:
+  static:

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -71,19 +72,25 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'back.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
+WSGI_APPLICATION = 'backend.wsgi.application'
+if DEBUG:
+	DATABASES = {
+		'default': {
+			'ENGINE': 'django.db.backends.sqlite3',
+			'NAME': BASE_DIR / 'db.sqlite3',
+		}
+	}
+else:
+	DATABASES = {
+		"default": {
+			"ENGINE": "django.db.backends.postgresql",
+			"NAME": os.environ.get("DATABASE_NAME", "mydatabase"),
+			"USER": os.environ.get("DATABASE_USER", "myuser"),
+			"PASSWORD": os.environ.get("DATABASE_PASSWORD", "mypassword"),
+			"HOST": os.environ.get("DATABASE_HOST", "localhost"),
+			"PORT": os.environ.get("DATABASE_PORT", 5432),
+		}
+	}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -150,6 +157,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5555',
     'http://127.0.0.1',
 	'http://localhost',
+	f'https://{HOST}',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -161,14 +169,56 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:5555',
     'http://127.0.0.1',
 	'http://localhost',
+	f'https://{HOST}',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+		'rest_framework.authentication.TokenAuthentication',
+
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ],
 }
 
 AUTH_USER_MODEL = 'api.CustomUser'
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "media/" if DEBUG else "/vol/media/"
+STATIC_URL = "/api_static/"
+STATIC_ROOT = "static/" if DEBUG else "/vol/static/"
+UNICODE_JSON = True
+
+if not DEBUG:
+	SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = not DEBUG
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "general.log",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console", "file"],
+            "level": os.environ.get("DJANGO_LOG_LEVEL", "INFO"),
+        }
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} ({levelname})- {name}- {message}",
+            "style": "{",
+        }
+    },
+}
