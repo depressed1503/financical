@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-_pos#a0@b0qfe%w0)qkvjp4d-r(c4mhl+*jiez&o%8e!l3-97-")
 
 DEBUG = os.environ.get("DEBUG", 'True').lower() in ('true', '1', 't',)
 HOST = os.environ.get("HOST", "financical.ru")
@@ -58,7 +58,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+WSGI_APPLICATION = 'back.wsgi.application'
 if DEBUG:
 	DATABASES = {
 		'default': {
