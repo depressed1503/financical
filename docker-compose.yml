@@ -18,7 +18,7 @@ services:
     env_file:
       - ".env"
     build:
-      context: financical_back
+      context: back
       dockerfile: Dockerfile
     container_name: financical_backend
     environment:
@@ -46,7 +46,7 @@ services:
 
   front:
     build:
-      context: financical_front
+      context: front
       dockerfile: ./Dockerfile
       args:
         - VITE_BACKEND_IP=${VITE_BACKEND_IP}
