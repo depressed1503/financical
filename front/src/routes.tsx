@@ -3,8 +3,8 @@ import AuthProvider, { useAuth } from "@/context/authContext"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import LoginPage from "@/pages/LoginPage"
 import IndexPage from "@/pages/IndexPage"
-import NavBar from "./components/NavBar"
 import RegistrationPage from "./pages/RegistrationPage"
+import NavBar from "./components/NavBar"
 
 type PrivateRouteProps = {
 	isForAuthenticated: boolean,

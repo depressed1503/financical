@@ -19,3 +19,4 @@ class Category(models.Model):
     user = models.ForeignKey(to='CustomUser', on_delete=models.CASCADE)
     name = models.CharField(verbose_name="Название", max_length=140)
     color = models.CharField(verbose_name="Цвет в формате #FFFFFF", max_length=7)
+    icon = models.CharField(verbose_name="Иконка", max_length=3)

@@ -3,9 +3,10 @@ import { useNavigate } from "react-router"
 import Axios from "@/lib/axiosConfig"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCurrentUser } from "@/lib/queryFunctions"
+import { CustomUser } from "@/lib/types"
 
 const AuthContext = createContext<{
-    user: object | undefined,
+    user: CustomUser | undefined,
     login: (p1: string, p2: string) => void,
     logout: () => void
 }>({user: undefined, login: () => {}, logout: () => {}})
@@ -42,11 +43,10 @@ export default function AuthProvider(props: {children: ReactNode}) {
         Axios.get("api/auth/logout/")
         navigate("/")
     }
-
     return (
         <AuthContext.Provider value={
             {
-                user,
+                user: user?.data,
                 login,
                 logout
             }

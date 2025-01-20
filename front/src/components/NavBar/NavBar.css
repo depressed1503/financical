@@ -13,3 +13,7 @@
     width: 25px;
     height: 25px;
 }
+
+.navbar__title {
+    cursor: pointer;
+}

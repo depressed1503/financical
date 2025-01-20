@@ -9,9 +9,14 @@ class SpendingListCreateAPIView(generics.ListCreateAPIView):
     queryset = Spending.objects.all()
     serializer_class = SpendingSerializer
 
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.filter(user=self.request.user.id)
 
 class SpendingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Spending.objects.all()

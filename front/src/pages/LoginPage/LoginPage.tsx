@@ -2,6 +2,8 @@ import { useState } from "react"
 import "./LoginPage.css"
 import { useMutation } from "@tanstack/react-query"
 import { useAuth } from "@/context/authContext"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 export default function LoginPage() {
     const [login, setLogin] = useState<string>("")
@@ -13,10 +15,10 @@ export default function LoginPage() {
 
     return (
         <>
-            <div>
-                <input value={login} onChange={(e) => setLogin(e.target.value)} type="text" />
-                <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
-                <button onClick={() => loginMutation.mutate()}>Войти</button>
+            <div className="flex flex-col gap-1 mx-auto max-w-60">
+                <Input value={login} onChange={(e) => setLogin(e.target.value)} type="text" />
+                <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
+                <Button onClick={() => loginMutation.mutate()}>Войти</Button>
             </div>
         </>
     )
