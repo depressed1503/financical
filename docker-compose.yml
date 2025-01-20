@@ -37,7 +37,7 @@ services:
              echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell
              && python manage.py collectstatic --noinput && gunicorn --workers 3 --bind 0.0.0.0:8000 backend.wsgi:application --timeout 120"
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       - pgdb
     volumes:
@@ -54,7 +54,7 @@ services:
     container_name: financical_frontend
     command: serve -s dist
     ports:
-      - '3000:3000'
+      - '3001:3000'
 
   nginx:
     build:
