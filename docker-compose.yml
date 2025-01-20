@@ -1,24 +1,6 @@
 version: '3'
 
 services:
-  traefik:
-    image: traefik:v2.10
-    command:
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=zaharov.andrey161@gmail.com"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt:/letsencrypt"
-    networks:
-      - web
-
   pgdb:
     image: postgres:latest
     container_name: financical_pgdb
@@ -73,22 +55,6 @@ services:
     command: serve -s dist
     ports:
       - '3001:3000'
-
-  nginx:
-    build:
-      context: ./nginx
-    depends_on:
-      - back
-      - front
-    volumes:
-      - media:/vol/media/
-      - static:/vol/static/
-    networks:
-      - web
-    labels:
-      - "traefik.http.routers.app1.rule=Host(`financical.ru`)"
-      - "traefik.http.routers.app1.entrypoints=websecure"
-      - "traefik.http.routers.app1.tls.certresolver=myresolver"
 volumes:
   postgres_data:
   media:
