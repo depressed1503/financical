@@ -3,7 +3,7 @@ version: '3'
 services:
   pgdb:
     image: postgres:latest
-    container_name: pgdb
+    container_name: financical_pgdb
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -18,9 +18,9 @@ services:
     env_file:
       - ".env"
     build:
-      context: backend
+      context: financical_back
       dockerfile: Dockerfile
-    container_name: backend
+    container_name: financical_backend
     environment:
       DATABASE_NAME: ${DB_NAME}
       DATABASE_USER: ${DB_USER}
@@ -46,12 +46,12 @@ services:
 
   front:
     build:
-      context: frontend
+      context: financical_front
       dockerfile: ./Dockerfile
       args:
         - VITE_BACKEND_IP=${VITE_BACKEND_IP}
         - VITE_DEBUG=${DEBUG}
-    container_name: frontend
+    container_name: financical_frontend
     command: serve -s dist
     ports:
       - '3000:3000'
