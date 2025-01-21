@@ -29,6 +29,10 @@ export async function createCategory(user: number | undefined, name: string, col
         })
 }
 
+export async function deleteCategory(id:number) {
+    return await Axios.delete(`api/category/${id}/`)
+}
+
 export async function createSpending(user: number | undefined, sum: number | undefined, timestamp: string, category: number | undefined, name: string, text: string) {
     if (user !== undefined &&  sum !== undefined)
         console.log({
