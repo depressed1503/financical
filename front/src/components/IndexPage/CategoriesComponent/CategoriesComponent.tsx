@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import CategoryIconChooseComponent from "../CategoryIconChooseComponent";
 import { DateRange } from "react-day-picker";
+import hexToRgba from "@/lib/hexToRgba";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -80,7 +81,7 @@ export default function CategoriesComponent(props: {date: DateRange | undefined}
                     {
                         label:"₽ потрачено: ",
                         data: datasets,
-                        backgroundColor: [...userCategories?.data.map((category) => category.color) || [], "#ddd"],
+                        backgroundColor: [...userCategories?.data.map((category) => hexToRgba(category.color)) || [], hexToRgba("#ddd")],
                         borderWidth: 0
                     }
                 ]

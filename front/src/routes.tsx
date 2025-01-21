@@ -5,6 +5,7 @@ import LoginPage from "@/pages/LoginPage"
 import IndexPage from "@/pages/IndexPage"
 import RegistrationPage from "./pages/RegistrationPage"
 import NavBar from "./components/NavBar"
+import { ThemeProvider } from "./components/themeProvider"
 
 type PrivateRouteProps = {
 	isForAuthenticated: boolean,
@@ -25,25 +26,27 @@ const queryClient = new QueryClient()
 export default function AppRoutes() {
     return (
         <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <NavBar></NavBar>
-                <div style={{ padding: "15px "}}>
-                    <Routes>
-                        <Route element={<PrivateRoute isForAuthenticated={true} />}>
+            <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> 
+                <QueryClientProvider client={queryClient}>
+                    <AuthProvider>
+                        <NavBar></NavBar>
+                        <div style={{ padding: "15px "}}>
+                            <Routes>
+                                <Route element={<PrivateRoute isForAuthenticated={true} />}>
 
-                        </Route>
-                        <Route element={<PrivateRoute isForAuthenticated={false} />}>
-                            <Route path="/login" element={<LoginPage/>}></Route>
-                            <Route path="/registration" element={<RegistrationPage/>}></Route>
-                        </Route>
-                        <Route>
-                            <Route path="/" element={<IndexPage/>}></Route>
-                        </Route>
-                    </Routes>
-                </div>
-            </AuthProvider>
-        </QueryClientProvider>
+                                </Route>
+                                <Route element={<PrivateRoute isForAuthenticated={false} />}>
+                                    <Route path="/login" element={<LoginPage/>}></Route>
+                                    <Route path="/registration" element={<RegistrationPage/>}></Route>
+                                </Route>
+                                <Route>
+                                    <Route path="/" element={<IndexPage/>}></Route>
+                                </Route>
+                            </Routes>
+                        </div>
+                    </AuthProvider>
+                </QueryClientProvider>
+            </ThemeProvider>
         </BrowserRouter>
     )
 }

@@ -24,6 +24,7 @@ import { Category } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import hexToRgba from "@/lib/hexToRgba";
 
 export default function SpendingsComponent(props: {date: DateRange | undefined}) {
     const queryClient = useQueryClient()
@@ -70,7 +71,7 @@ export default function SpendingsComponent(props: {date: DateRange | undefined})
                         }}>
                             <DialogTrigger asChild>
                                 <div className="flex items-center gap-2">
-                                    <CategoryIcon color={category?.color} icon={category?.icon}></CategoryIcon>
+                                    <CategoryIcon color={hexToRgba(category?.color)} icon={category?.icon}></CategoryIcon>
                                     <span>{spending.name}</span><div className="flex-1 border-dotted border-foreground border-b-[2px]"></div><span className="ml-auto">{spending.sum}₽</span>
                                 </div>
                             </DialogTrigger>
