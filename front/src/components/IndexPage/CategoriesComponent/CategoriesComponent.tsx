@@ -21,7 +21,7 @@ export default function CategoriesComponent(props: {date: DateRange | undefined}
         queryFn: () => getCurrentUserSpendings(props.date)
     })
     const datasets = useMemo(() => 
-        userCategories?.data.map((category) => userSpendings?.data.filter((spending) => spending.category == category.id).map((spending2) => spending2.sum).reduce((a, b) => a+b, 0)),
+        [...userCategories?.data || [], {id: null}].map((category) => userSpendings?.data.filter((spending) => spending.category == category.id).map((spending2) => spending2.sum).reduce((a, b) => a+b, 0)),
     [userCategories, userSpendings])
     console.log(datasets)
     const [newCategoryDialogShown, setNewCategoryDialogShown] = useState<boolean>(false)
@@ -45,12 +45,12 @@ export default function CategoriesComponent(props: {date: DateRange | undefined}
                 </DialogContent>
             </Dialog>
             <Doughnut data={{
-                labels: userCategories?.data.map((category) => category.icon + " " + category.name),
+                labels: [...userCategories?.data.map((category) => category.icon + " " + category.name) || [], "Без категории"],
                 datasets: [
                     {
                         label:"₽ потрачено: ",
                         data: datasets,
-                        backgroundColor: userCategories?.data.map((category) => category.color),
+                        backgroundColor: [...userCategories?.data.map((category) => category.color) || [], "#ddd"],
                         borderWidth: 0
                     }
                 ]
