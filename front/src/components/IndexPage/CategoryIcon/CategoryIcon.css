@@ -1,0 +1,8 @@
+.icons_chooser__icon {
+    border-radius: 50%;
+    width: 30px!important;
+    height: 30px!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

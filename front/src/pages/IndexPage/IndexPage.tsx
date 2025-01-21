@@ -1,5 +1,6 @@
 import AddComponent from "@/components/IndexPage/AddComponent"
 import CategoriesComponent from "@/components/IndexPage/CategoriesComponent"
+import SpendingsComponent from "@/components/IndexPage/SpendingsComponent"
 import { useAuth } from "@/context/authContext"
  
 import { format } from "date-fns"
@@ -70,6 +71,7 @@ export default function IndexPage() {
                         </div>
                         <CategoriesComponent date={date}></CategoriesComponent>
                         <AddComponent></AddComponent>
+                        <SpendingsComponent date={date}></SpendingsComponent>
                     </div>
                 </>
                 :
