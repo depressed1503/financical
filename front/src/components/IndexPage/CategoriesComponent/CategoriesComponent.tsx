@@ -21,8 +21,9 @@ export default function CategoriesComponent(props: {date: DateRange | undefined}
         queryFn: () => getCurrentUserSpendings(props.date)
     })
     const datasets = useMemo(() => 
-        userCategories?.data.map((category) => userSpendings?.data.filter((spending) => spending.category == category.id).map((spending2) => spending2.sum)),
+        userCategories?.data.map((category) => userSpendings?.data.filter((spending) => spending.category == category.id).map((spending2) => spending2.sum).reduce((a, b) => a+b, 0)),
     [userCategories, userSpendings])
+    console.log(datasets)
     const [newCategoryDialogShown, setNewCategoryDialogShown] = useState<boolean>(false)
 
     return (

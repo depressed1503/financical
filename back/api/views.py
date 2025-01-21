@@ -2,20 +2,28 @@ import datetime
 from rest_framework import generics, views, permissions, response, status
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
+
+from django.conf import settings
 from .models import *
 from .serializers import *
 
 
 class SpendingListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Spending.objects.all()
     serializer_class = SpendingSerializer
-
+    permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
-        queryset = Spending.objects.filter(timestamp__range=(
-                datetime.datetime.strptime(self.request.query_params["from"], "%d.%m.%Y"),
-                datetime.datetime.strptime(self.request.query_params["to"], "%d.%m.%Y"),
-            ))
-        return queryset
+        if self.request.method == "GET":
+            from_date = self.request.query_params.get("from")
+            to_date = self.request.query_params.get("to")
+            if from_date and to_date:
+                return Spending.objects.filter(
+                    timestamp__range=(
+                        datetime.datetime.strptime(from_date, "%d.%m.%Y"),
+                        datetime.datetime.strptime(to_date, "%d.%m.%Y"),
+                    )
+                )
+            return Spending.objects.none()
+        return Spending.objects.all()
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
@@ -57,9 +65,10 @@ class LoginView(views.APIView):
             resp.set_cookie(
                 key="sessionid",
                 value=request.session._get_or_create_session_key(),
-                httponly=True,
+                httponly=False,
                 secure=False,
-                samesite='Lax'
+                samesite='None',
+                domain="127.0.0.1" if settings.DEBUG else settings.HOST
             )
             return resp
         else:
@@ -78,13 +87,14 @@ class CSRFTokenView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         csrf_token = get_token(request)
-        resp = response.Response({"csrfToken": csrf_token}, status=status.HTTP_200_OK)
+        resp = response.Response(status=status.HTTP_200_OK)
         resp.set_cookie(
             key='csrftoken',
             value=csrf_token,
             httponly=False,
             secure=False,
-            samesite='Lax'
+            samesite='None',
+            domain="127.0.0.1" if settings.DEBUG else settings.HOST
         )
         return resp
 

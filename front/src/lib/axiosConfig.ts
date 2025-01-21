@@ -1,6 +1,6 @@
-import axios from "axios"
+import axios from "axios"	
 
-export const backendHost = ((import.meta.env.VITE_DEBUG == "1") ? "http://" : "https://") + (import.meta.env.VITE_BACKEND_IP ?? "localhost:8000") + '/'
+export const backendHost = ((import.meta.env.VITE_DEBUG == "1") ? "http://" : "https://") + (import.meta.env.VITE_BACKEND_IP ?? "127.0.0.1:8000") + '/'
 console.log(backendHost, import.meta.env)
 const Axios = axios.create({
     xsrfCookieName: 'csrftoken',
@@ -10,7 +10,7 @@ const Axios = axios.create({
 	baseURL: backendHost,
 	headers: {
 		"Content-Type": "application/json",
-		"Accept": "application/json"
+		"Accept": "application/json",
 	},
 })
 

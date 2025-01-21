@@ -160,15 +160,23 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_HEADERS = ['X-CSRFToken', 'Content-Type', 'Authorization']
 CORS_EXPOSE_HEADERS = ['X-CSRFToken']
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5555',
+    'http://127.0.0.1:3000',
+    'http://localhost:5173',
+    'http://localhost:5555',
+    'http://localhost:3000',
+	f'https://{HOST}',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-		'rest_framework.authentication.TokenAuthentication',
 
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        'rest_framework.permissions.IsAuthenticated'
     ],
 }
 

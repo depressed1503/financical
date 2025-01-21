@@ -22,9 +22,7 @@ export default function AddComponent() {
     const [currentSum, setCurrentSum] = useState<string>("")
     const [currentTime, setCurrentTime] = useState(() => {
         const now = new Date()
-        const hours = String(now.getHours()).padStart(2, "0")
-        const minutes = String(now.getMinutes()).padStart(2, "0")
-        return `${hours}:${minutes}`
+        return now.toISOString()
     })
     const createSpendingMutation = useMutation({
         mutationFn: () => createSpending(user?.id, parseFloat(currentSum), currentTime, parseInt(currentCategory!), currentName, currentText),
