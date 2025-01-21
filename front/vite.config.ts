@@ -13,5 +13,8 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5173
+  },
+  define: {
+    'process.env.VITE_DEBUG': JSON.stringify(process.env.VITE_DEBUG || 0),
   }
 })
