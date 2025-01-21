@@ -28,7 +28,7 @@ export function hexToHsla(hex: string = "#ddd", alpha = 0.75, theme: "dark" | "l
     }
 
     h = Math.round(h * 360)
-    s = Math.round(s * 100) + (theme === "dark" ? 10: )
+    s = Math.round(s * 100) + (theme === "dark" ? 10: -10)
     l = Math.round(l * 100)
     return `hsla(${h}, ${s}%, ${l}%, ${alpha})`
 }
