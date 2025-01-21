@@ -12,7 +12,6 @@ export default function NavBar() {
             <div className="flex-1 flex justify-center items-center space-x-6">
                 <img src={img} alt="" />
                 <span onClick={() => navigate("/")} className="navbar__title">Financical</span>
-                <span className="">123</span>
             </div>
             
             <div className="ml-auto items-center">

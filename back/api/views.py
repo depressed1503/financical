@@ -27,6 +27,7 @@ class SpendingListCreateAPIView(generics.ListCreateAPIView):
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user.id)
@@ -34,10 +35,14 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 class SpendingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Spending.objects.all()
     serializer_class = SpendingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class RegistrationView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
