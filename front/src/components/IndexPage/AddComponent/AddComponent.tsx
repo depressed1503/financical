@@ -46,15 +46,15 @@ export default function AddComponent() {
                             <Input value={currentSum} onChange={(e) => setCurrentSum(e.target.value)} type="number" placeholder="Сумма"></Input>
                             <Input value={currentText} onChange={(e) => setCurrentText(e.target.value)} type="text" placeholder="Описание"></Input>
                             <Select value={currentCategory} onValueChange={setCurrentCategory}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Категория" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {userCategories && (userCategories as AxiosResponse).data?.map((category: Category) => 
-                                {
-                                    return <SelectItem key={category.name} value={category.id.toString()}>{category.icon} {category.name}</SelectItem>
-                                })}
-                            </SelectContent>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Категория" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {userCategories && (userCategories as AxiosResponse).data?.map((category: Category) => 
+                                    {
+                                        return <SelectItem key={category.name} value={category.id.toString()}>{category.icon} {category.name}</SelectItem>
+                                    })}
+                                </SelectContent>
                             </Select>
                             <Input type="datetime-local" value={currentTime} onChange={(e) => setCurrentTime(e.target.value)}></Input>
                             <Button onClick={() => {createSpendingMutation.mutate(); setAddSpendingDialogShown(false)}}>Создать трату</Button>

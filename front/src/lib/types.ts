@@ -21,5 +21,14 @@ export type Spending = {
     timestamp: string,
     name: string,
     text: string,
-    category: number
+    category: number | null
+}
+
+export type UpdateSpending = {
+    id: number,
+    sum: number,
+    timestamp: string,
+    name: string,
+    text: string,
+    category: number | null
 }

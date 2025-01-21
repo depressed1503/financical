@@ -1,7 +1,7 @@
 import { addDays } from 'date-fns';
 import { DateRange } from "react-day-picker"
 import Axios from "./axiosConfig"
-import { Category, CustomUser, Spending } from "./types"
+import { Category, CustomUser, Spending, UpdateSpending } from "./types"
 
 export async function createUser(login: string, email: string, password: string, first_name: string, last_name: string) {
     return await Axios.post("api/registration/", {
@@ -41,4 +41,12 @@ export async function createSpending(user: number | undefined, sum: number | und
         return await Axios.post<Category>("api/spending/", {
             user, sum, timestamp, category, name, text
         })
+}
+
+export async function deleteSpending(id:number) {
+    return await Axios.delete(`api/spending/${id}/`)
+}
+
+export async function updateSpending(spending:UpdateSpending) {
+    return await Axios.patch(`api/spending/${spending.id}/`, {...spending})
 }
