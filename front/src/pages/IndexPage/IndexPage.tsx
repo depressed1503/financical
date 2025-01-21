@@ -29,7 +29,7 @@ export default function IndexPage() {
         <>
             {user ?
                 <>
-                    <div className="flex flex-col gap-1 justify-center mx-auto max-w-[400px] text-[#fff]">
+                    <div className="flex flex-col gap-1 justify-center mx-auto max-w-[400px]">
                         <div className={"grid gap-2"}>
                             <Popover>
                                 <PopoverTrigger asChild>

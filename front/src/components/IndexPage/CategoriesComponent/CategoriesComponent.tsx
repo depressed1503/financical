@@ -4,7 +4,7 @@ import { getCurrentUserCategories, getCurrentUserSpendings } from "@/lib/queryFu
 import { useQuery } from "@tanstack/react-query";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import CategoryIconChooseComponent from "../CategoryIconChooseComponent";
 import { DateRange } from "react-day-picker";
@@ -20,7 +20,9 @@ export default function CategoriesComponent(props: {date: DateRange | undefined}
         queryKey: ["user_spendings", props.date],
         queryFn: () => getCurrentUserSpendings(props.date)
     })
-
+    const datasets = useMemo(() => 
+        userCategories?.data.map((category) => userSpendings?.data.filter((spending) => spending.category == category.id).map((spending2) => spending2.sum)),
+    [userCategories, userSpendings])
     const [newCategoryDialogShown, setNewCategoryDialogShown] = useState<boolean>(false)
 
     return (
@@ -46,12 +48,13 @@ export default function CategoriesComponent(props: {date: DateRange | undefined}
                 datasets: [
                     {
                         label:"₽ потрачено: ",
-                        data: userCategories?.data.map((category) => userSpendings?.data.filter((spending) => spending.category == category.id).map((spending2) => spending2.sum)),
+                        data: datasets,
                         backgroundColor: userCategories?.data.map((category) => category.color),
                         borderWidth: 0
                     }
                 ]
             }}></Doughnut>
+            <span className="font-semibold">Всего: {datasets?.flat().reduce((a, b) => (a ?? 0) + (b ?? 0), 0)}</span>
         </div>
     )
 }
