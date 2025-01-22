@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router"
 import AuthProvider, { useAuth } from "@/context/authContext"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ThemeProvider } from "./components/themeProvider"
 import LoginPage from "@/pages/LoginPage"
 import IndexPage from "@/pages/IndexPage"
+import TestPage from "./pages/TestPage"
 import RegistrationPage from "./pages/RegistrationPage"
 import NavBar from "./components/NavBar"
-import { ThemeProvider } from "./components/themeProvider"
 
 type PrivateRouteProps = {
 	isForAuthenticated: boolean,
@@ -41,6 +42,7 @@ export default function AppRoutes() {
                                 </Route>
                                 <Route>
                                     <Route path="/" element={<IndexPage/>}></Route>
+                                    <Route path="/test" element={<TestPage></TestPage>}></Route>
                                 </Route>
                             </Routes>
                         </div>
