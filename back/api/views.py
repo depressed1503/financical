@@ -7,6 +7,10 @@ from django.conf import settings
 from .models import *
 from .serializers import *
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class SpendingListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = SpendingSerializer
@@ -28,9 +32,10 @@ class SpendingListCreateAPIView(generics.ListCreateAPIView):
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
-        print(request.META.get('HTTP_COOKIE'))
         return super().post(request, *args, **kwargs)
+    
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user.id)
 
@@ -110,3 +115,14 @@ class CurrentUserView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         return response.Response(data=CustomUserSerializer(self.request.user).data)
+
+def check_cookie_view(request):
+    logger.error(request.META.get('HTTP_COOKIE'))
+    logger.error(request.COOKIES.get("sessionid"))
+    logger.error(request.COOKIES.get("csrftoken"))
+    print(request.META.get('HTTP_COOKIE'))
+    print(request.COOKIES.get("sessionid"))
+    print(request.COOKIES.get("csrftoken"))
+    return response.Response(status=status.HTTP_200_OK, data={
+        "cookie": request.META.get('HTTP_COOKIE')
+    })
