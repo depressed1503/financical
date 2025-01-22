@@ -1,4 +1,6 @@
-export function hexToHsla(hex: string = "#ddd", alpha = 0.75, theme: "dark" | "light") {
+import { clamp } from "./clamp"
+
+export function hexToHsla(hex: string = "#ddd", theme: "dark" | "light" | "system", alpha = 0.75, ) {
     // Remove the hash symbol if it exists
     hex = hex.replace('#', '')
 
@@ -28,7 +30,7 @@ export function hexToHsla(hex: string = "#ddd", alpha = 0.75, theme: "dark" | "l
     }
 
     h = Math.round(h * 360)
-    s = Math.round(s * 100) + (theme === "dark" ? 10: -10)
-    l = Math.round(l * 100)
+    s = clamp(Math.round(s * 100) + (theme === "dark" ? -10 : 10), 0, 100)
+    l = clamp(Math.round(l * 100) + (theme === "dark" ? 5 : -5), 0, 100)
     return `hsla(${h}, ${s}%, ${l}%, ${alpha})`
 }
