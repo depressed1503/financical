@@ -1,5 +1,4 @@
 import axios from "axios"	
-import Cookies from "js-cookie"
 
 export const backendHost = ((import.meta.env.VITE_DEBUG == "1") ? "http://" : "https://") + (import.meta.env.VITE_BACKEND_IP ?? "127.0.0.1:8000") + '/'
 const Axios = axios.create({
@@ -11,7 +10,6 @@ const Axios = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 		"Accept": "application/json",
-		"X-CSRFToken": Cookies.get("csrftoken")
 	},
 })
 

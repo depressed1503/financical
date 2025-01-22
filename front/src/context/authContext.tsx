@@ -21,21 +21,15 @@ export default function AuthProvider(props: {children: ReactNode}) {
     const navigate = useNavigate()
 
     async function login(login: string, password: string) {
-        Axios.get("api/csrf/")
-        .then(() => {
-            Axios.post("api/login/", {
-                login,
-                password
-            }).then((resp) => {
-                console.log(resp)
-                queryClient.invalidateQueries({queryKey: ["user"]})
-                navigate("/")
-            }).catch((error) => {
-                console.warn(error)
-            })
-        })
-        .catch((error) => {
-            console.log(error)
+        Axios.post("api/login/", {
+            login,
+            password
+        }).then((resp) => {
+            console.log(resp)
+            queryClient.invalidateQueries({queryKey: ["user"]})
+            navigate("/")
+        }).catch((error) => {
+            console.warn(error)
         })
     }
 
