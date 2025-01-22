@@ -28,7 +28,9 @@ class SpendingListCreateAPIView(generics.ListCreateAPIView):
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    def post(self, request, *args, **kwargs):
+        print(request.META.get('HTTP_COOKIE'))
+        return super().post(request, *args, **kwargs)
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user.id)
 
