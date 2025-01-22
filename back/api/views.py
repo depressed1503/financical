@@ -1,8 +1,7 @@
 import datetime
-from rest_framework import generics, views, permissions, response, status
+from rest_framework import generics, views, permissions, response, status, decorators
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
-
 from django.conf import settings
 from .models import *
 from .serializers import *
@@ -116,6 +115,7 @@ class CurrentUserView(views.APIView):
     def get(self, request, *args, **kwargs):
         return response.Response(data=CustomUserSerializer(self.request.user).data)
 
+@decorators.api_view(["GET", "POST"])
 def check_cookie_view(request):
     logger.error(request.META.get('HTTP_COOKIE'))
     logger.error(request.COOKIES.get("sessionid"))
