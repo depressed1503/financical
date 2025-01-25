@@ -14,8 +14,18 @@ const Axios = axios.create({
 })
 
 Axios.interceptors.request.use(config => {
-    config.headers["X-CSRFToken"] = Cookies.get("csrftoken");
+    // Правильный способ получения куки
+    const csrfToken = Cookies.get("csrftoken");
+    
+    // Для дебага - проверим значение токена
+    console.log("[AXIOS] Current CSRF Token:", csrfToken);
+    
+    if (csrfToken) {
+        config.headers["X-CSRFToken"] = csrfToken;
+    } else {
+        console.warn("CSRF token not found in cookies!");
+    }
+    
     return config;
 });
-
 export default Axios

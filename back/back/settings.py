@@ -30,11 +30,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
 	'api.middlewares.CSRFDebugMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -126,6 +126,7 @@ CSRF_COOKIE_HTTPONLY = False  # Recommended for security
 CSRF_COOKIE_DOMAIN = None if DEBUG else f'.{HOST}'
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'None'
+CSRF_USE_SESSIONS = False
 
 # Session Settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
