@@ -79,7 +79,7 @@ class LoginView(views.APIView):
                 httponly=False,
                 secure=False,
                 samesite='None',
-                domain="127.0.0.1" if settings.DEBUG else settings.HOST
+                domain="127.0.0.1" if settings.DEBUG else f'.{settings.HOST}'
             )
             return resp
         else:
@@ -105,7 +105,7 @@ class CSRFTokenView(views.APIView):
             httponly=False,
             secure=False,
             samesite='None',
-            domain="127.0.0.1" if settings.DEBUG else settings.HOST
+            domain="127.0.0.1" if settings.DEBUG else f'.{settings.HOST}'
         )
         return resp
 

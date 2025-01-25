@@ -6,6 +6,7 @@ const Axios = axios.create({
     xsrfCookieName: 'csrftoken',
 	xsrfHeaderName: 'X-CSRFToken',
 	withCredentials: true,
+	withXSRFToken: true,
 	baseURL: backendHost,
 	headers: {
 		"Content-Type": "application/json",
