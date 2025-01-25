@@ -6,13 +6,16 @@ const Axios = axios.create({
     xsrfCookieName: 'csrftoken',
 	xsrfHeaderName: 'X-CSRFToken',
 	withCredentials: true,
-	withXSRFToken: true,
 	baseURL: backendHost,
 	headers: {
 		"Content-Type": "application/json",
 		"Accept": "application/json",
-		"X-CSRFToken": Cookies.get("csrftoken")
 	},
 })
+
+Axios.interceptors.request.use(config => {
+    config.headers["X-CSRFToken"] = Cookies.get("csrftoken");
+    return config;
+});
 
 export default Axios

@@ -35,6 +35,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+	'api.middlewares.CSRFDebugMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -122,7 +123,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF Settings
 CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_COOKIE_HTTPONLY = False  # Recommended for security
-CSRF_COOKIE_DOMAIN = None if DEBUG else HOST
+CSRF_COOKIE_DOMAIN = None if DEBUG else f'.{HOST}'
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'None'
 
@@ -131,9 +132,10 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = False  # Recommended for security
 SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_DOMAIN = None if DEBUG else HOST
+SESSION_COOKIE_DOMAIN = None if DEBUG else f'.{HOST}'
 
 CORS_ALLOWED_ORIGINS = [
+	f'https://{HOST}',
     'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5555',
@@ -142,10 +144,10 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5555',
     'http://127.0.0.1',
 	'http://localhost',
-	f'https://{HOST}',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+	f'https://{HOST}',
     'http://localhost:3000',
     'http://localhost:5173',
     "http://localhost:5555",
@@ -154,7 +156,6 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:5555',
     'http://127.0.0.1',
 	'http://localhost',
-	f'https://{HOST}',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
