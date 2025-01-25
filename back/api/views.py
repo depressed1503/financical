@@ -77,7 +77,7 @@ class LoginView(views.APIView):
                 key="sessionid",
                 value=request.session._get_or_create_session_key(),
                 httponly=False,
-                secure=False,
+                secure=not settings.DEBUG,
                 samesite='None',
                 domain="127.0.0.1" if settings.DEBUG else f'.{settings.HOST}'
             )
@@ -103,7 +103,7 @@ class CSRFTokenView(views.APIView):
             key='csrftoken',
             value=csrf_token,
             httponly=False,
-            secure=False,
+            secure=not settings.DEBUG,
             samesite='None',
             domain="127.0.0.1" if settings.DEBUG else f'.{settings.HOST}'
         )
