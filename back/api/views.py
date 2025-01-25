@@ -76,9 +76,6 @@ class LoginView(views.APIView):
             resp.set_cookie(
                 key="sessionid",
                 value=request.session._get_or_create_session_key(),
-                httponly=False,
-                secure=not settings.DEBUG,
-                samesite='None',
                 domain="127.0.0.1" if settings.DEBUG else f'.{settings.HOST}'
             )
             return resp
@@ -102,9 +99,6 @@ class CSRFTokenView(views.APIView):
         resp.set_cookie(
             key='csrftoken',
             value=csrf_token,
-            httponly=False,
-            secure=not settings.DEBUG,
-            samesite='None',
             domain="127.0.0.1" if settings.DEBUG else f'.{settings.HOST}'
         )
         return resp
