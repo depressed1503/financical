@@ -31,6 +31,7 @@ services:
       ENV_PASSWORD: ${ENV_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DEBUG: 0
+      HOST: ${HOST}
 
     command: >
      bash -c "python manage.py migrate &&

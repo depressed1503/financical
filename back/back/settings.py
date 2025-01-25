@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-_pos#a0@b0qfe%w0)qkvjp4d-r(c4mhl+*jiez&o%8e!l3-97-")
 
 DEBUG = os.environ.get("DEBUG", 'True').lower() in ('true', '1', 't',)
-HOST = os.environ.get("HOST", "financical.ru")
+HOST = os.environ.get("HOST", ".financical.ru")
 
 ALLOWED_HOSTS = [
 	"127.0.0.1",
@@ -33,9 +33,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 	'api.middlewares.CSRFDebugMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -161,8 +161,13 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_HEADERS = ['X-CSRFToken', 'Content-Type', 'Authorization']
-CORS_EXPOSE_HEADERS = ['X-CSRFToken']
+CORS_ALLOW_HEADERS = [
+    'x-csrftoken',
+    'content-type',
+    'authorization'
+]
+
+CORS_EXPOSE_HEADERS = ['x-csrftoken']
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:5173',
     'http://127.0.0.1:5555',
