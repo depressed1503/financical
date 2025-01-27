@@ -16,9 +16,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useState } from "react"
+import { useNavigate } from "react-router"
 
 export default function IndexPage() {
     const { user } = useAuth()
+    const navigate = useNavigate()
     const [date, setDate] = useState<DateRange | undefined>(() => { 
         const today = new Date()
         return {
@@ -76,9 +78,12 @@ export default function IndexPage() {
                 </>
                 :
                 <>
-                    <div className="flex flex-col">
-                        <a href="/login">login page</a>
-                        <a href="/registration">registration page</a>
+                    <div className="flex flex-col gap-3 mx-auto max-w-[400px] text-center">
+                        <div><strong>Financical</strong> - простое и удобное приложение для контроля финансов, доступное на всех устройствах.</div>
+                        <div className="flex gap-1 justify-center">
+                            <Button onClick={() => navigate("/login")}>Вход</Button>
+                            <Button variant={"outline"} onClick={() => navigate("/registration")}>Регистрация</Button>
+                        </div>
                     </div>
                 </>
             }
