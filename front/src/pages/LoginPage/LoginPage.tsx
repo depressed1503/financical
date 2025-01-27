@@ -16,8 +16,8 @@ export default function LoginPage() {
     return (
         <>
             <div className="flex flex-col gap-1 mx-auto max-w-60">
-                <Input value={login} onChange={(e) => setLogin(e.target.value)} type="text" />
-                <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
+                <Input value={login} placeholder="Почта" onChange={(e) => setLogin(e.target.value)} type="text" />
+                <Input value={password} placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} type="password" />
                 <Button onClick={() => loginMutation.mutate()}>Войти</Button>
             </div>
         </>
