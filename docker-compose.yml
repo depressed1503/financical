@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     container_name: financical_pgdb
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -13,6 +13,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5431:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zakhar -d financical"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   back:
     env_file:
@@ -30,7 +35,7 @@ services:
       ENV_EMAIL: ${ENV_EMAIL}
       ENV_PASSWORD: ${ENV_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-      DEBUG: 0
+      DEBUG: ${DEBUG}
       HOST: ${HOST}
 
     command: >
@@ -41,7 +46,8 @@ services:
     ports:
       - "8001:8000"
     depends_on:
-      - pgdb
+      pgdb:
+        condition: service_healthy
     volumes:
       - media:/vol/media/
       - static:/vol/static/

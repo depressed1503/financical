@@ -11,7 +11,8 @@ HOST = os.environ.get("HOST", ".financical.ru")
 ALLOWED_HOSTS = [
 	"127.0.0.1",
 	"localhost",
-	"financical.ru"
+	"financical.ru",
+	f'{HOST}'
 ]
 
 
@@ -123,7 +124,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF Settings
 CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_COOKIE_HTTPONLY = False  # Recommended for security
-CSRF_COOKIE_DOMAIN = None if DEBUG else f'.{HOST}'
+CSRF_COOKIE_DOMAIN = f'{HOST}' if DEBUG else f'.{HOST}'
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_USE_SESSIONS = False
@@ -134,31 +135,19 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = False  # Recommended for security
 SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_DOMAIN = None if DEBUG else f'.{HOST}'
+SESSION_COOKIE_DOMAIN = f'{HOST}' if DEBUG else f'.{HOST}'
 
-CORS_ALLOWED_ORIGINS = [
-	f'https://{HOST}',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5555',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5555',
-    'http://127.0.0.1',
-	'http://localhost',
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https?://localhost(:\d+)?$",
+    r"^https?://127\.0\.0\.1(:\d+)?$",
+    rf"^https?://{HOST}(:\d+)?$",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-	f'https://{HOST}',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    "http://localhost:5555",
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5555',
-    'http://127.0.0.1',
-	'http://localhost',
+    f"https://{HOST}",
+    f"http://{HOST}",
 ]
+
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -168,15 +157,6 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CORS_EXPOSE_HEADERS = ['x-csrftoken']
-CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5555',
-    'http://127.0.0.1:3000',
-    'http://localhost:5173',
-    'http://localhost:5555',
-    'http://localhost:3000',
-	f'https://{HOST}',
-]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
