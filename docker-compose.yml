@@ -38,18 +38,21 @@ services:
       HOST: ${HOST}
 
     command: >
-     bash -c "python manage.py migrate &&
-         echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
-         python manage.py collectstatic --noinput &&
-         daphne -b 0.0.0.0 -p 8000 back.asgi:application"
+      bash -c "python manage.py migrate &&
+          echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
+          python manage.py collectstatic --noinput &&
+          daphne -b 0.0.0.0 -p 8000 back.asgi:application"
+
     ports:
       - "8001:8000"
+
     depends_on:
       pgdb:
         condition: service_healthy
-  volumes:
-    - media_volume:/vol/media/
-    - static_volume:/vol/static/
+
+    volumes:
+      - media_volume:/vol/media/
+      - static_volume:/vol/static/
 
 volumes:
   postgres_data:
