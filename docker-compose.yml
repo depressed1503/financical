@@ -31,7 +31,6 @@ services:
     environment:
       DATABASE_HOST: pgdb
       DATABASE_PORT: 5432
-      DJANGO_SETTINGS_MODULE: back.settings.production
     depends_on:
       pgdb:
         condition: service_healthy
