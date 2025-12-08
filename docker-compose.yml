@@ -21,33 +21,37 @@ services:
       start_period: 30s
 
   back:
+    env_file:
+      - ".env"
     build:
-      context: ./back
+      context: back
       dockerfile: Dockerfile
     container_name: financical_backend
-    restart: unless-stopped
-    env_file:
-      - .env
     environment:
-      DATABASE_HOST: pgdb
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USER: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      DATABASE_HOST: ${DB_HOST}
       DATABASE_PORT: 5432
+      ENV_EMAIL: ${ENV_EMAIL}
+      ENV_PASSWORD: ${ENV_PASSWORD}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG}
+      HOST: ${HOST}
+
+    command: >
+     bash -c "python manage.py migrate &&
+         echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
+         python manage.py collectstatic --noinput &&
+         daphne -b 0.0.0.0 -p 8000 back.asgi:application"
+    ports:
+      - "8001:8000"
     depends_on:
       pgdb:
         condition: service_healthy
     volumes:
-      - static_volume:/app/static
-      - media_volume:/app/media
-    command: >
-      bash -c "
-        echo 'Waiting for database...' &&
-        sleep 5 &&
-        python manage.py migrate --noinput &&
-        python manage.py collectstatic --noinput --clear &&
-        echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', '${DJANGO_SUPERUSER_PASSWORD:-admin123}')\" | python manage.py shell &&
-        gunicorn --bind 0.0.0.0:8000 --workers 3 --threads 2 --access-logfile - back.wsgi:application
-      "
-    ports:
-      - "8000:8000"
+      - media:/vol/media/
+      - static:/vol/static/
 
   front_builder:
     build:
