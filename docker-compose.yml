@@ -47,21 +47,9 @@ services:
     depends_on:
       pgdb:
         condition: service_healthy
-    volumes:
-      - media:/vol/media/
-      - static:/vol/static/
-
-  front_builder:
-    build:
-      context: ./front
-      dockerfile: Dockerfile.build
-      args:
-        - VITE_API_URL=https://financical.ru/api
-        - VITE_DEBUG=${VITE_DEBUG:-false}
-    container_name: financical_front_builder
-    volumes:
-      - frontend_build:/app/dist
-    command: npm run build
+  volumes:
+    - media_volume:/vol/media/
+    - static_volume:/vol/static/
 
 volumes:
   postgres_data:
@@ -69,6 +57,4 @@ volumes:
   static_volume:
     driver: local
   media_volume:
-    driver: local
-  frontend_build:
     driver: local
