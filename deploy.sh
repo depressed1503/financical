@@ -7,7 +7,7 @@ echo "=== Deploying Financical ==="
 
 # 1. Останавливаем текущие контейнеры
 echo "Stopping existing containers..."
-docker-compose down
+docker compose down
 
 # 2. Собираем и запускаем бэкенд и БД
 echo "Starting backend and database..."
