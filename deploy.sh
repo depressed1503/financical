@@ -11,7 +11,7 @@ docker-compose down
 
 # 2. Собираем и запускаем бэкенд и БД
 echo "Starting backend and database..."
-docker-compose up -d pgdb back
+docker compose up -d pgdb back
 
 # 3. Ждем готовности бэкенда
 echo "Waiting for backend to be ready..."
@@ -19,7 +19,7 @@ sleep 10
 
 # 4. Собираем фронтенд
 echo "Building frontend..."
-docker-compose run --rm front_builder
+docker compose run --rm front_builder
 
 # 5. Копируем собранный фронтенд на сервер
 echo "Copying frontend build to server..."
