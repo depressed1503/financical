@@ -1,72 +1,73 @@
-version: '3'
+version: '3.8'
 
 services:
   pgdb:
-    image: postgres:latest
+    image: postgres:15-alpine
     container_name: financical_pgdb
+    restart: unless-stopped
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
-      PG_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5431:5432"
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U zakhar -d financical"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
+      start_period: 30s
 
   back:
-    env_file:
-      - ".env"
     build:
-      context: back
+      context: ./back
       dockerfile: Dockerfile
     container_name: financical_backend
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      DATABASE_NAME: ${DB_NAME}
-      DATABASE_USER: ${DB_USER}
-      DATABASE_PASSWORD: ${DB_PASSWORD}
-      DATABASE_HOST: ${DB_HOST}
+      DATABASE_HOST: pgdb
       DATABASE_PORT: 5432
-      ENV_EMAIL: ${ENV_EMAIL}
-      ENV_PASSWORD: ${ENV_PASSWORD}
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-      DEBUG: ${DEBUG}
-      HOST: ${HOST}
-
-    command: >
-     bash -c "python manage.py migrate &&
-         echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
-         python manage.py collectstatic --noinput &&
-         daphne -b 0.0.0.0 -p 8000 back.asgi:application"
-    ports:
-      - "8001:8000"
+      DJANGO_SETTINGS_MODULE: back.settings.production
     depends_on:
       pgdb:
         condition: service_healthy
     volumes:
-      - media:/vol/media/
-      - static:/vol/static/
-
-  front:
-    build:
-      context: front
-      dockerfile: ./Dockerfile
-      args:
-        - VITE_BACKEND_IP=${VITE_BACKEND_IP}
-        - VITE_DEBUG=${DEBUG}
-    container_name: financical_frontend
-    command: serve -s dist
+      - static_volume:/app/static
+      - media_volume:/app/media
+    command: >
+      bash -c "
+        echo 'Waiting for database...' &&
+        sleep 5 &&
+        python manage.py migrate --noinput &&
+        python manage.py collectstatic --noinput --clear &&
+        echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', '${DJANGO_SUPERUSER_PASSWORD:-admin123}')\" | python manage.py shell &&
+        gunicorn --bind 0.0.0.0:8000 --workers 3 --threads 2 --access-logfile - back.wsgi:application
+      "
     ports:
-      - '3001:3000'
+      - "8000:8000"
+
+  front_builder:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.build
+      args:
+        - VITE_API_URL=https://financical.ru/api
+        - VITE_DEBUG=${VITE_DEBUG:-false}
+    container_name: financical_front_builder
+    volumes:
+      - frontend_build:/app/dist
+    command: npm run build
+
 volumes:
   postgres_data:
-  media:
-  static:
-networks:
-  web:
-    external: true
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+  frontend_build:
+    driver: local

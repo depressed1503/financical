@@ -1,0 +1,21 @@
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Устанавливаем зависимости
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Копируем исходный код
+COPY . .
+
+# Сборка с переменными окружения
+ARG VITE_API_URL
+ARG VITE_DEBUG
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_DEBUG=${VITE_DEBUG}
+
+RUN npm run build
+
+# Создаем архив с собранным фронтендом
+RUN tar -czf /frontend-build.tar.gz -C dist .
