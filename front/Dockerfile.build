@@ -2,20 +2,23 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Устанавливаем зависимости
+# Копируем package.json и package-lock.json
 COPY package*.json ./
-RUN npm ci --only=production
 
-# Копируем исходный код
+# Устанавливаем зависимости
+RUN npm ci
+
+# Копируем все файлы проекта
 COPY . .
 
-# Сборка с переменными окружения
+# ARG для переменных сборки
 ARG VITE_API_URL
 ARG VITE_DEBUG
 ENV VITE_API_URL=${VITE_API_URL}
 ENV VITE_DEBUG=${VITE_DEBUG}
 
+# Собираем проект
 RUN npm run build
 
-# Создаем архив с собранным фронтендом
-RUN tar -czf /frontend-build.tar.gz -C dist .
+# Копируем собранные файлы в отдельную папку
+RUN mkdir -p /output && cp -r dist/* /output/
