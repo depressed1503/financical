@@ -4,7 +4,7 @@ services:
     container_name: financical_pgdb
     restart: unless-stopped
     volumes:
-      - postgres_data:/var/lib/postgresql/
+      - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -25,6 +25,7 @@ services:
       context: back
       dockerfile: Dockerfile
     container_name: financical_backend
+    restart: unless-stopped
     environment:
       DATABASE_NAME: ${DB_NAME}
       DATABASE_USER: ${DB_USER}
@@ -44,7 +45,7 @@ services:
           daphne -b 0.0.0.0 -p 8000 back.asgi:application"
 
     ports:
-      - "8000:8000"
+      - "8001:8000"
 
     depends_on:
       pgdb:
@@ -53,6 +54,15 @@ services:
     volumes:
       - media_volume:/vol/media/
       - static_volume:/vol/static/
+
+  front_builder:
+    build:
+      context: front
+      dockerfile: Dockerfile
+    image: financical_front_builder
+    container_name: financical_front_builder
+    working_dir: /app
+    command: sh -c "npm install && npm run build"
 
 volumes:
   postgres_data:
