@@ -1,43 +1,45 @@
 #!/bin/bash
-
-# Скрипт деплоя
 set -e
 
 echo "=== Deploying Financical ==="
 
-# 1. Останавливаем текущие контейнеры
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+FRONTEND_DIR="/var/www/financical"
+NGINX_AVAILABLE="/etc/nginx/sites-available/financical"
+NGINX_ENABLED="/etc/nginx/sites-enabled/financical"
+NGINX_SOURCE="$PROJECT_DIR/deploy/nginx/financical"
+
 echo "Stopping existing containers..."
 docker compose down
 
-# 2. Собираем и запускаем бэкенд и БД
 echo "Starting backend and database..."
-docker compose up -d pgdb back
+docker compose up -d --build pgdb back
 
-# 3. Ждем готовности бэкенда
-echo "Waiting for backend to be ready..."
-sleep 10
-
-# 4. Собираем фронтенд
 echo "Building frontend..."
-docker compose run --rm front_builder
+docker compose build front_builder
 
-# 5. Копируем собранный фронтенд на сервер
-echo "Copying frontend build to server..."
-FRONTEND_DIR="/var/www/financical"
-sudo mkdir -p $FRONTEND_DIR
+echo "Preparing frontend directory..."
+sudo mkdir -p "$FRONTEND_DIR"
+sudo rm -rf "$FRONTEND_DIR"/*
 
-# Извлекаем файлы из контейнера
-CONTAINER_ID=$(docker create financical_front_builder)
-docker cp $CONTAINER_ID:/app/dist/. $FRONTEND_DIR/
-docker rm $CONTAINER_ID
+echo "Extracting frontend build..."
+docker rm -f financical_front_builder_tmp 2>/dev/null || true
+docker create --name financical_front_builder_tmp financical_front_builder >/dev/null
+docker cp financical_front_builder_tmp:/app/dist/. "$FRONTEND_DIR/"
+docker rm -f financical_front_builder_tmp >/dev/null
 
-# 6. Настраиваем права
+echo "Installing nginx config..."
+sudo cp "$NGINX_SOURCE" "$NGINX_AVAILABLE"
+sudo ln -sfn "$NGINX_AVAILABLE" "$NGINX_ENABLED"
+
 echo "Setting permissions..."
-sudo chown -R www-data:www-data $FRONTEND_DIR
-sudo chmod -R 755 $FRONTEND_DIR
+sudo chown -R www-data:www-data "$FRONTEND_DIR"
+sudo chmod -R 755 "$FRONTEND_DIR"
 
-# 7. Перезагружаем nginx
+echo "Testing nginx config..."
+sudo nginx -t
+
 echo "Reloading nginx..."
-sudo nginx -t && sudo systemctl reload nginx
+sudo systemctl reload nginx
 
 echo "=== Deployment complete! ==="

@@ -1,14 +1,14 @@
 services:
   pgdb:
-    image: postgres:latest
+    image: postgres:16-alpine
     container_name: financical_pgdb
     restart: unless-stopped
-    volumes:
-      - postgres_data:/var/lib/postgresql/
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -20,9 +20,9 @@ services:
 
   back:
     env_file:
-      - ".env"
+      - .env
     build:
-      context: back
+      context: ./back
       dockerfile: Dockerfile
     container_name: financical_backend
     restart: unless-stopped
@@ -30,41 +30,36 @@ services:
       DATABASE_NAME: ${DB_NAME}
       DATABASE_USER: ${DB_USER}
       DATABASE_PASSWORD: ${DB_PASSWORD}
-      DATABASE_HOST: ${DB_HOST}
+      DATABASE_HOST: pgdb
       DATABASE_PORT: 5432
       ENV_EMAIL: ${ENV_EMAIL}
       ENV_PASSWORD: ${ENV_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DEBUG: ${DEBUG}
       HOST: ${HOST}
-
     command: >
-      bash -c "python manage.py migrate &&
-          echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
-          python manage.py collectstatic --noinput &&
-          daphne -b 0.0.0.0 -p 8000 back.asgi:application"
-
-    ports:
-      - "8001:8000"
-
+      bash -c "
+      python manage.py migrate &&
+      echo \"from api.models import CustomUser; CustomUser.objects.create_superuser('$${ENV_EMAIL}', '$${ENV_EMAIL}', '$${ENV_PASSWORD}') if not CustomUser.objects.filter(username='$${ENV_EMAIL}').exists() else None\" | python manage.py shell &&
+      python manage.py collectstatic --noinput &&
+      daphne -b 0.0.0.0 -p 8000 back.asgi:application
+      "
     depends_on:
       pgdb:
         condition: service_healthy
-
+    ports:
+      - "8001:8000"
     volumes:
-      - media_volume:/vol/media/
-      - static_volume:/vol/static/
+      - /var/www/financical_backend_media:/vol/media/
+      - /var/www/financical_backend_static:/vol/static/
 
   front_builder:
     build:
-      context: front
+      context: ./front
       dockerfile: Dockerfile
     image: financical_front_builder
     container_name: financical_front_builder
     working_dir: /app
-    command: sh -c "npm install && npm run build"
 
 volumes:
   postgres_data:
-  static_volume:
-  media_volume:
